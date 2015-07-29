@@ -3,6 +3,8 @@ import pandas as pd
 import glob
 import numpy as np
 from skimage import io
+import matplotlib.cm as cm
+from matplotlib import pyplot as plt
 
 
 class LoadData(object):
@@ -17,7 +19,7 @@ class LoadData(object):
                           'camera_lineFeedback', 'camera_temp']
         self.df = pd.DataFrame()  # dataframe of information about slices
 
-    def load_metadata(self, filename):
+    def load_metadata(self, filename='metadata.json'):
         '''loads metadata as pandas dataframe
 
         Paramater filename: address of metadata json file
@@ -41,25 +43,40 @@ class LoadData(object):
                  Slices not in dictionary are set to 0 bubbles.
         '''
         self.df['bubbles'] = 0
-        self.df['rolling'] = False 
+        self.df['rolling'] = False
         self.df.rolling[rolling] = True
         for num_bubbles, slice_list in bubbles.iteritems():
             self.df.bubbles[slice_list] = num_bubbles
 
-    def pix_intensity(self, address, cutoff=500, left_margin=500, 
-                      right_margin=700):
-        '''Create df column of average pixel intensity of tops of the image
-
+    def pix_intensity(self, address='images', cutoff=500, left_margin=500,
+                      right_margin=700, display=False):
+        '''Create df column of average pixel intensity of tops of the images
+        Images with rolling will be much darker on top
+        
         Parameters:
         address: address of folder containing the images. Assumes the first
-                 five digits of each image file name is the slice index.
+                 five characters of each image filename is the slice index.
         cutoff: number of rows of pixels at the top of the image used
         left_margin: number of columns of pixels on the left to ignore
-        right_margin: number of columns of pixels on the right to ignore
+        right_margin: number of columns of pixels on the right to ignore'
+        display: boolean - display images of the selected top sections
         '''
         self.df['pix_intensity'] = np.nan
         filelist = glob.glob(address + "/*.png")
-        for file in filelist:
-            image = io.imread(file)[:cutoff,left_margin:-right_margin]
-            slice_index = int(file[len(address)+1:len(address)+6])
+        for filename in filelist:
+            image = io.imread(filename)[:cutoff, left_margin:-right_margin]
+            slice_index = int(filename[len(address)+1:len(address)+6])
             self.df.pix_intensity[slice_index] = image.mean()
+            if display:
+                self.display_image(image)
+
+    def display_image(self, image):
+        '''displays black and white image
+
+        Parameter: image as ndarray of pixel intensities
+        '''
+        plt.imshow(image,cmap = cm.Greys_r)
+        plt.show()
+
+
+

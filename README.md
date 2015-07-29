@@ -14,12 +14,21 @@ I used the following python packages:
 * skimage
 * sklearn
 * scipy
+* matplotlib
 
+The code can be run from the command line with the following steps
+
+* git clone https://github.com/mattlichti/artifact-detection
+* cd artifact_detection
+Put the images in a folder labeled 'images' in the artifact_detection direcory
+* python run.py
 
 ## Correlation between process parameters and artifacts
 
 Looking at the microscope properties, the highest correlation with the artifacts was camera temperature. 
-The p value .006 is significantly lower than the conventional threshold of statistical significance of .05. However, since I was making 22 comparisons (2 artifacts * 11 machine parameters), there is a much higher chance of false positives. Using a bonferroni correction, the p value of .006 is no longer statistivally significant because I would divide the threshold of .05 by 22. Even if camera temperature and bubbles are correlated, the correlation may be caused by a confounding variable. The first 22 samples were taken when the camera temp was 70.5 degrees and the next 34 when it was 71 degrees. There may be some other reasons why there were more bubbles in the earlier samples than the later samples. Half a degree also intuitively seems too small a difference in temperature for such a large change in bubbles.
+The p value .006 is significantly lower than the conventional threshold of statistical significance of .05. However, since I was making 22 comparisons (2 artifacts * 11 machine parameters), there is a much higher chance of false positives. Using a bonferroni correction, the p value of .006 is no longer statistivally significant because I would divide the threshold of .05 by 22. 
+
+Even if camera temperature and bubbles are correlated, the correlation is likely caused by a confounding variable. The first 22 samples were taken when the camera temp was 70.5 degrees and the next 34 when it was 71 degrees. There may be some other reasons why there were more bubbles in the earlier samples than the later samples. Half a degree also seems too small a difference in temperature for such a large change in bubble frequency.
 
 ## Next steps
 

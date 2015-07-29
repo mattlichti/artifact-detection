@@ -1,6 +1,10 @@
 import load_data as ld
 
 def run():
+  '''
+  Loads metadata from 'metadata.json' and images from 'images' folder which
+  both must be located in the same directory as the python files 
+  '''
   # I manually labeled the images with artifacts in order to train the model
   # It's likely that I missed some of the bubbles during my visual inspection
   rolling = [15462, 15502, 15552]
@@ -9,6 +13,7 @@ def run():
                      15512],
                  2: [15102,  15172, 15182, 15282]}
   data = ld.LoadData()
+  print "loading metadata and labeling artifacts"
   data.load_metadata('metadata.json')
   data.label_artifacts(bubbles=bubble_dict, rolling=rolling)
   data.pix_intensity('images')
