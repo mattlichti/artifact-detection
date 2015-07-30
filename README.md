@@ -1,7 +1,6 @@
 # artifact-detection
 
-## Motivation
-
+The purpose of this project is to build a model for detecting imaging artifacts (rolling and bubbles) as well as determine if any process parameters are correlated with the artifacts. 
 
 ## Installation
 
@@ -27,11 +26,23 @@ run.py assumes the images to be examined are in the artifact-detection directory
 
 ## Rolling Detection
 
+Images with rolling have large dark splotches at the top. The simplist solution seemed to be to just compare the average pixel intensity of the tops of the images. I used the top 500 rows of pixels, but that was a pretty arbitrary choice. 
 
+The average pixel intensity of the top 500 rows of the 53 images without rolling ranged from 125 to 203.
+
+![No Rolling](https://github.com/mattlichti/artifact-detection/blob/master/plots/no_rolling.png)
+
+The average pixel intensity of the top 500 rows of the 3 images with with rolling ranged from 30 to 73
+
+![Rolling](https://github.com/mattlichti/artifact-detection/blob/master/plots/rolling.png)
+
+This makes it easy to train a model to differentiate between images with and without rolling.
 
 ## Bubble detection
 
-![Bubble detection](/path/to/image.jpg)
+![Bubble detection](https://github.com/mattlichti/artifact-detection/blob/master/plots/bubble%20detection.png)
+
+The bubble detection can be run from the bubble_detection function in run.py
 
 
 ## Correlation between process parameters and artifacts
