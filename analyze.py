@@ -2,7 +2,7 @@ from sklearn.lda import LDA
 from scipy.stats import pearsonr
 
 
-class Model(object):
+class Stats(object):
 
     def __init__(self, df):
         self.df = df
@@ -21,9 +21,5 @@ class Model(object):
         return self.df.groupby('rolling').describe()['pix_intensity']
 
     def stat_signif(self, cols=('bubbles', 'camera_temp')):
-        '''returns p value for correlation between camera temp and bubbles'''
+        '''returns p value for relationship between camera temp and bubbles'''
         return pearsonr(self.df[cols[0]], self.df[cols[1]])
-
-    def train(self):
-        mod = LDA()
-        mod.train()

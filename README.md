@@ -11,7 +11,6 @@ I used the following python packages:
 * json
 * glob
 * skimage
-* sklearn
 * scipy
 * matplotlib
 
@@ -26,38 +25,37 @@ run.py assumes the images to be examined are in the artifact-detection directory
 
 ## Rolling Detection
 
-Images with rolling have large dark splotches at the top. The simplist solution seemed to be to just compare the average pixel intensity of the tops of the images. I used the top 500 rows of pixels, but that was a pretty arbitrary choice. 
+Images with rolling have large dark splotches at the top. The simplest solution seemed to be to just compare the average pixel intensity of the tops of the images. I used the top 500 rows of pixels, but that was a pretty arbitrary choice. 
 
-The average pixel intensity of the top 500 rows of the 53 images without rolling ranged from 125 to 203.
+The average pixel intensity of the top 500 rows of the 53 images without rolling ranged from 125 to 203. An example of an image without rolling is pictured below.
 
 ![No Rolling](https://github.com/mattlichti/artifact-detection/blob/master/plots/no_rolling.png)
 
-The average pixel intensity of the top 500 rows of the 3 images with with rolling ranged from 30 to 73
+The average pixel intensity of the top 500 rows of the 3 images with with rolling ranged from 30 to 73. An example of an image with rolling is pictured below.
 
 ![Rolling](https://github.com/mattlichti/artifact-detection/blob/master/plots/rolling.png)
 
-This makes it easy to train a model to differentiate between images with and without rolling.
+The clear separation in average intensity makes it easy to train a model to differentiate between images with and without rolling.
 
 ## Bubble detection
 
-![Bubble detection](https://github.com/mattlichti/artifact-detection/blob/master/plots/bubble%20detection.png)
+I still haven't gotten a bubble detection algorithm to work well. The best algorithm I've tried so far is blob detection using Determinant of Hessian (DoH). It still has lots of false positives. In addition, my laptop doesn't have enough memory to examine an entire image with the algorithms I've tried so I've only examined images in chunks. Ideally, I would run the algorithm on AWS but haven't tried that yet. The bubble detection can be run from the bubble_detection function in run.py. The output image below identifies the bubble but also has a false positive.
 
-The bubble detection can be run from the bubble_detection function in run.py
+![Bubble detection](https://github.com/mattlichti/artifact-detection/blob/master/plots/bubble%20detection.png)
 
 
 ## Correlation between process parameters and artifacts
 
-Looking at the microscope properties, the highest correlation with the artifacts was camera temperature. 
-The p value .006 is significantly lower than the conventional threshold of statistical significance of .05. However, since I was making 22 comparisons (2 artifacts * 11 machine parameters), there is a much higher chance of false positives. Using a bonferroni correction, the p value of .006 is no longer statistivally significant because I would divide the threshold of .05 by 22. 
+I used 11 machine properties whose values varied between the slices in my analysis. The rest of the properties were constant across the 56 slices so I can't find a correlation between those properties and the artifacts.
 
-Even if camera temperature and bubbles are correlated, the correlation is likely caused by a confounding variable. The first 22 samples were taken when the camera temp was 70.5 degrees and the next 34 when it was 71 degrees. There are many possible reasons why there could more bubbles in the earlier samples than the later samples aside from the half degree change in temperature.
+The highest correlation (-.36) and only statistically significant correlation was between the numbers of bubbles and the camera temperature. The p value of .006 is under than the conventional threshold for statistical significance of .05. However, since I was making 22 comparisons (2 artifacts * 11 machine parameters), there is a much higher chance of false positives. Using a bonferroni correction, the p value of .006 is no longer statistically significant because I would divide the threshold of .05 by 22 to get an adjusted threshold of .002. 
 
-## Next steps
+Even if the correlation is statistically significant, the correlation is likely caused by confounding variables. The first 22 samples had an average of .73 bubbles and were taken when the camera temp was 70.5 degrees. The next 34 had an average of .26 bubbles and were taken when the camera temp was 71 degrees. There are many possible reasons why there could more bubbles in the earlier samples than the later samples aside from the half degree change in temperature.
 
-Improve bubble finding algorithm
-Run on AWS
+## Potential Next Steps
 
-More data will allow cross validation
-Run machine learning algorithms on machine parameters with more data
+* Implement a much better bubble detection algorithm. I would need to read up more on edge detection and spend more time experimenting with scikit-image. 
 
-Find correlation with much more data so results are more likely to be statistically significant. 
+* Try running on Spark and AWS.
+
+* Use a much larger sample size when examining the correlation between the process parameters and the artifacts. This would greatly increase the chance of finding statistically significant correlations. It would also allow me to use multivariate regression or machine learning algorithms to better determine the relation between the parameters and the artifacts.

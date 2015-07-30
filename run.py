@@ -1,5 +1,5 @@
 import load_data as ld
-import model
+import analyze
 
 
 def run(display=False):
@@ -24,10 +24,11 @@ def run(display=False):
     data.label_artifacts(bubbles=bubble_dict, rolling=rolling)
     data.pix_intensity('images', display=display)
     print data.df
-    return data.df
+    statistical_analysis(data.df)
+
 
 def statistical_analysis(df):
-    mod = model.Model(df)
+    mod = analyze.Stats(df)
     print 'correlations between the machine properties and the artifacts'
     print mod.corr()
     print 'summary statistics for artifacts based on camera temp'
@@ -35,7 +36,9 @@ def statistical_analysis(df):
     print 'summary statistics for pixel intensity based on rolling'
     print mod.pix_intensity()
     print 'p value for relationship between camera temp and bubbles'
+    print mod.stat_signif()
     mod.stat_signif()
+
 
 def bubble_detection():
     ''' runs an example of the bubble detection which doesn't really work'''
