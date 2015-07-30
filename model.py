@@ -21,7 +21,6 @@ class Model(object):
 	def stat_signif(self, cols = ('bubbles', 'camera_temp')):
 		return pearsonr(self.df[cols[0]], self.df[cols[1]])
 
-
-
-
-
+	def train(self):
+		mod = LDA():
+		mod.train()
